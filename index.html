@@ -498,136 +498,101 @@ const io = new IntersectionObserver(es => es.forEach(e => {
 }), { threshold: .1 });
 document.querySelectorAll('.r,.r2').forEach(el => io.observe(el));
 
-/* ---- PHYSICS BUBBLES ---- */
+/* ---- RISING PARTICLES ---- */
 (function () {
   const canvas = document.getElementById('bubbles-canvas');
   const ctx = canvas.getContext('2d');
-  const labels = ['Inversión', 'Creación', 'Impacto', 'Fe', 'Reino', 'Donaciones', 'Mayordomía', 'Empresas', 'Justicia', 'Educación', 'Misión', 'Capital'];
-  const colors = ['rgba(22,201,106,0.18)', 'rgba(255,255,255,0.07)', 'rgba(22,201,106,0.1)', 'rgba(255,255,255,0.05)'];
-  let W, H, balls = [];
-
-  /* Zones where bubbles must NOT enter — computed after resize */
-  let forbiddenZones = [];
-
-  function computeForbiddenZones() {
-    /* We protect: hero-title, hero-top bar, hero-bottom-bar.
-       All coordinates are relative to the canvas (which fills #hero). */
-    forbiddenZones = [];
-    const heroRect = canvas.getBoundingClientRect();
-
-    const safeSelectors = ['.hero-title', '.hero-top', '.hero-bottom-bar'];
-    safeSelectors.forEach(sel => {
-      const el = document.querySelector(sel);
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const padding = 30; // extra breathing room in px
-      forbiddenZones.push({
-        x: r.left - heroRect.left - padding,
-        y: r.top  - heroRect.top  - padding,
-        w: r.width  + padding * 2,
-        h: r.height + padding * 2
-      });
-    });
-  }
+  let W, H, particles = [];
+  const COUNT = 85;
 
   function resize() {
     W = canvas.offsetWidth;
     H = canvas.offsetHeight;
     canvas.width  = W;
     canvas.height = H;
-    computeForbiddenZones();
   }
 
-  function circleOverlapsZone(x, y, r) {
-    for (const z of forbiddenZones) {
-      /* Closest point on rectangle to circle centre */
-      const cx = Math.max(z.x, Math.min(x, z.x + z.w));
-      const cy = Math.max(z.y, Math.min(y, z.y + z.h));
-      const dx = x - cx, dy = y - cy;
-      if (dx * dx + dy * dy < r * r) return true;
+  class Particle {
+    constructor(scatter) {
+      this.init(scatter);
     }
-    return false;
-  }
 
-  class Ball {
-    constructor() {
-      this.r     = Math.random() * 55 + 40;
-      this.label = labels[Math.floor(Math.random() * labels.length)];
-      this.color = colors[Math.floor(Math.random() * colors.length)];
-      this.borderOpacity = Math.random() * 0.12 + 0.05;
-      this.vx = (Math.random() - .5) * 0.6;
-      this.vy = (Math.random() - .5) * 0.6;
-
-      /* Place ball in a spot that doesn't overlap forbidden zones */
-      let attempts = 0;
-      do {
-        this.x = Math.random() * (W - this.r * 2) + this.r;
-        this.y = Math.random() * (H - this.r * 2) + this.r;
-        attempts++;
-      } while (circleOverlapsZone(this.x, this.y, this.r) && attempts < 200);
+    init(scatter) {
+      this.x      = Math.random() * W;
+      this.y      = scatter ? Math.random() * H : H + Math.random() * 120;
+      this.speed  = Math.random() * 0.45 + 0.12;
+      this.drift  = (Math.random() - 0.5) * 0.25;
+      this.freq   = Math.random() * 0.018 + 0.008;
+      this.phase  = Math.random() * Math.PI * 2;
+      this.life   = scatter ? Math.random() : 0;
+      const tier  = Math.random();
+      if (tier < 0.06) {
+        /* Large glowing ember */
+        this.size  = Math.random() * 2.5 + 2.8;
+        this.glow  = true;
+        this.green = Math.random() < 0.6;
+        this.alpha = Math.random() * 0.35 + 0.45;
+      } else if (tier < 0.28) {
+        /* Medium dot */
+        this.size  = Math.random() * 1.2 + 1.2;
+        this.glow  = false;
+        this.green = Math.random() < 0.3;
+        this.alpha = Math.random() * 0.3 + 0.25;
+      } else {
+        /* Small dust */
+        this.size  = Math.random() * 0.8 + 0.3;
+        this.glow  = false;
+        this.green = false;
+        this.alpha = Math.random() * 0.2 + 0.08;
+      }
     }
 
     update() {
-      let nx = this.x + this.vx;
-      let ny = this.y + this.vy;
+      this.y -= this.speed;
+      this.x += this.drift + Math.sin(this.y * this.freq + this.phase) * 0.35;
+      this.life = Math.min(1, this.life + 0.008);
 
-      /* Canvas wall bouncing */
-      if (nx - this.r < 0 || nx + this.r > W) { this.vx *= -1; nx = this.x + this.vx; }
-      if (ny - this.r < 0 || ny + this.r > H) { this.vy *= -1; ny = this.y + this.vy; }
-
-      /* Forbidden zone deflection — push ball away if it would enter */
-      if (circleOverlapsZone(nx, ny, this.r)) {
-        /* Try reversing each axis independently to find a valid escape */
-        const tryX = this.x - this.vx;
-        const tryY = this.y - this.vy;
-        if (!circleOverlapsZone(tryX, ny, this.r)) {
-          this.vx *= -1; nx = tryX;
-        } else if (!circleOverlapsZone(nx, tryY, this.r)) {
-          this.vy *= -1; ny = tryY;
-        } else {
-          this.vx *= -1; this.vy *= -1;
-          nx = this.x - this.vx;
-          ny = this.y - this.vy;
-        }
-      }
-
-      this.x = nx;
-      this.y = ny;
+      if (this.y < -12) this.init(false);
     }
 
     draw() {
-      ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fillStyle = this.color; ctx.fill();
-      ctx.strokeStyle = `rgba(22,201,106,${this.borderOpacity})`; ctx.lineWidth = 1; ctx.stroke();
-      ctx.save(); ctx.translate(this.x, this.y);
-      ctx.rotate(Date.now() * 0.0003 + this.r);
-      ctx.font = `600 ${Math.max(8, this.r * .18)}px Inter,sans-serif`;
-      ctx.fillStyle = 'rgba(255,255,255,0.5)';
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText(this.label.toUpperCase(), 0, 0);
-      ctx.restore();
+      const fade = this.life * (this.y / H < 0.18 ? this.y / (H * 0.18) : 1);
+      const a    = this.alpha * Math.max(0, fade);
+      if (a <= 0.005) return;
+
+      const rgb = this.green ? '22,201,106' : '255,255,255';
+
+      if (this.glow) {
+        const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 5.5);
+        g.addColorStop(0,   `rgba(${rgb},${(a * 0.9).toFixed(3)})`);
+        g.addColorStop(0.4, `rgba(${rgb},${(a * 0.25).toFixed(3)})`);
+        g.addColorStop(1,   `rgba(${rgb},0)`);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 5.5, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${rgb},${a.toFixed(3)})`;
+      ctx.fill();
     }
   }
 
   function init() {
     resize();
-    balls = Array.from({ length: 12 }, () => new Ball());
+    particles = Array.from({ length: COUNT }, () => new Particle(true));
   }
 
   function loop() {
     ctx.clearRect(0, 0, W, H);
-    balls.forEach(b => { b.update(); b.draw(); });
+    particles.forEach(p => { p.update(); p.draw(); });
     requestAnimationFrame(loop);
   }
 
-  window.addEventListener('load', () => {
-    init();
-    loop();
-  });
-
-  window.addEventListener('resize', () => {
-    init();
-  });
+  window.addEventListener('load', () => { init(); loop(); });
+  window.addEventListener('resize', () => { init(); });
 })();
 
 /* ---- RADAR ---- */
