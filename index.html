@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wayerman</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -301,9 +302,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
   font-family:'DM Sans',sans-serif;
   font-size:8.5px;font-weight:500;letter-spacing:3px;
   text-transform:uppercase;padding:11px 24px;
-  cursor:pointer;transition:background .2s;white-space:nowrap
+  cursor:pointer;transition:background .2s,opacity .2s;white-space:nowrap
 }
 .add-btn:hover{background:var(--navy2)}
+.add-btn:disabled{opacity:.5;cursor:not-allowed}
 
 /* ── FOOTER ── */
 footer{
@@ -405,7 +407,7 @@ footer{
 
 <!-- MASTHEAD -->
 <div class="masthead">
-  <div class="masthead-logo">TNY<span> Proper</span></div>
+  <div class="masthead-logo">Way<span>erman</span></div>
   <div class="masthead-center">
     <div class="masthead-issue">Edición Digital · Vol. I</div>
     <div class="masthead-rule"></div>
@@ -425,7 +427,7 @@ footer{
       <div class="hero-eyebrow">
         <span class="hero-cat" id="hero-cat">Moda</span>
         <span class="hero-dot"></span>
-        <span class="hero-author">Redacción TNY</span>
+        <span class="hero-author">Redacción Wayerman</span>
       </div>
       <div class="hero-title" id="hero-title">El Traje de Tres Piezas Regresa: El Renacimiento del Formalismo en el Hombre Contemporáneo</div>
       <div class="hero-deck" id="hero-deck">Las grandes casas de Savile Row reportan un aumento del 34% en encargos de trajes a medida. La nueva generación descubre que la elegancia no caduca.</div>
@@ -460,11 +462,11 @@ footer{
 <div class="add-section">
   <span class="add-label">Nueva fuente</span>
   <input class="add-input" id="url-in" type="url" placeholder="Pega el enlace de la noticia...">
-  <button class="add-btn" onclick="addUrl()">Agregar →</button>
+  <button class="add-btn" id="add-btn" onclick="addUrl()">Agregar →</button>
 </div>
 
 <footer>
-  <div class="footer-logo">TNY<span> Proper</span></div>
+  <div class="footer-logo">Way<span>erman</span></div>
   <div class="footer-links">
     <span class="footer-link">Moda</span>
     <span class="footer-link">Relojes</span>
@@ -472,7 +474,7 @@ footer{
     <span class="footer-link">Autos</span>
     <span class="footer-link">Acerca de</span>
   </div>
-  <div class="footer-copy">© 2025 TNY Proper</div>
+  <div class="footer-copy">© 2025 Wayerman</div>
 </footer>
 
 <!-- MODAL -->
@@ -500,13 +502,15 @@ const S=[
 ];
 const CL={moda:"Moda",relojes:"Relojes",whisky:"Whisky & Spirits",formula1:"Formula 1",autos:"Autos",clase:"Clase & Estilo"};
 
+const FALLBACK_IMG="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80&auto=format";
+
 function renderStack(){
   const el=document.getElementById('hero-stack');
   el.innerHTML='';
   S.slice(1,5).forEach((s,i)=>{
     const d=document.createElement('div');
     d.className='stack-item';d.onclick=()=>openModal(i+1);
-    d.innerHTML=`<img class="stack-item-img" src="${s.img}" alt=""><div class="stack-item-content"><div class="stack-cat">${CL[s.cat]||s.cat}</div><div class="stack-title">${s.title}</div><div class="stack-meta">Redacción TNY</div></div>`;
+    d.innerHTML=`<img class="stack-item-img" src="${s.img}" alt=""><div class="stack-item-content"><div class="stack-cat">${CL[s.cat]||s.cat}</div><div class="stack-title">${s.title}</div><div class="stack-meta">Redacción Wayerman</div></div>`;
     el.appendChild(d);
   });
 }
@@ -539,15 +543,65 @@ function openModal(i){
 function closeModal(){document.getElementById('modal-bg').classList.remove('open')}
 function closeMbg(e){if(e.target===document.getElementById('modal-bg'))closeModal()}
 
-function addUrl(){
+/* ── OG metadata fetch via CORS proxies ── */
+async function fetchOGData(url){
+  const proxies=[
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  ];
+  for(const proxy of proxies){
+    try{
+      const r=await fetch(proxy,{signal:AbortSignal.timeout(8000)});
+      if(!r.ok)continue;
+      const text=await r.text();
+      const doc=new DOMParser().parseFromString(text,'text/html');
+      const og=p=>doc.querySelector(`meta[property="${p}"]`)?.getAttribute('content')||
+                   doc.querySelector(`meta[name="${p}"]`)?.getAttribute('content')||'';
+      let img=og('og:image')||og('twitter:image')||'';
+      /* resolve relative image URLs against the article origin */
+      if(img&&!img.startsWith('http')){
+        try{const base=new URL(url);img=new URL(img,base.origin).href;}catch(e){}
+      }
+      /* last resort: grab first meaningful <img> in the document */
+      if(!img){
+        const imgs=[...doc.querySelectorAll('article img,main img,img')];
+        const candidate=imgs.find(i=>i.src&&i.src.startsWith('http')&&!i.src.includes('logo')&&!i.src.includes('icon'));
+        if(candidate)img=candidate.src;
+      }
+      return{
+        title:og('og:title')||og('twitter:title')||doc.title||'',
+        deck:og('og:description')||og('description')||og('twitter:description')||'',
+        img,
+      };
+    }catch(e){}
+  }
+  return null;
+}
+
+async function addUrl(){
   const inp=document.getElementById('url-in');
+  const btn=document.getElementById('add-btn');
   const url=inp.value.trim();if(!url)return;
-  S.unshift({cat:"clase",title:"Artículo Agregado — Procesando Metadatos",deck:"TNY Proper extraerá automáticamente el titular, imagen y resumen editorial desde: "+url,img:"https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=900&q=80&auto=format",url});
+
+  btn.textContent='Cargando…';btn.disabled=true;
+
+  const meta=await fetchOGData(url);
+
+  S.unshift({
+    cat:'clase',
+    title:meta?.title||'Artículo Agregado',
+    deck:meta?.deck||'Contenido desde: '+url,
+    img:meta?.img||FALLBACK_IMG,
+    url,
+  });
+
   document.getElementById('hero-img').src=S[0].img;
   document.getElementById('hero-cat').textContent=CL[S[0].cat]||S[0].cat;
   document.getElementById('hero-title').textContent=S[0].title;
   document.getElementById('hero-deck').textContent=S[0].deck;
-  renderStack();renderGrid();inp.value='';
+  renderStack();renderGrid();
+  inp.value='';
+  btn.textContent='Agregar →';btn.disabled=false;
 }
 
 document.querySelectorAll('.topbar-cat').forEach(b=>{
