@@ -8,47 +8,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  --navy:#1C2B3A;
-  --navy2:#243347;
-  --cream:#FAFAF7;
-  --warm:#F4F1EB;
-  --ink:#111111;
-  --ink2:#2C2C2C;
-  --muted:#888880;
-  --rule:#E2DDD5;
-  --gold:#9E8255;
-  --gold2:#BFA278;
-  --red:#C0392B;
+  --navy:#1C2B3A;--navy2:#243347;--cream:#FAFAF7;--warm:#F4F1EB;
+  --ink:#111111;--ink2:#2C2C2C;--muted:#888880;--rule:#E2DDD5;
+  --gold:#9E8255;--gold2:#BFA278;--red:#C0392B;
 }
-
 html{background:var(--cream)}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
 
-.topbar{
-  background:var(--navy);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 2.5rem;height:44px;
-}
+.topbar{background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:44px}
 .topbar-cats{display:flex;gap:0}
-.topbar-cat{
-  font-size:9px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;
-  color:rgba(255,255,255,0.45);padding:0 1rem;height:44px;
-  display:flex;align-items:center;cursor:pointer;
-  border-bottom:2px solid transparent;background:none;
-  border-left:none;border-right:none;border-top:none;
-  transition:color .2s,border-color .2s;white-space:nowrap
-}
+.topbar-cat{font-size:9px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);padding:0 1rem;height:44px;display:flex;align-items:center;cursor:pointer;border-bottom:2px solid transparent;background:none;border-left:none;border-right:none;border-top:none;transition:color .2s,border-color .2s;white-space:nowrap}
 .topbar-cat:hover{color:rgba(255,255,255,0.85)}
 .topbar-cat.active{color:#fff;border-bottom-color:var(--gold2)}
 .topbar-right{font-size:8.5px;font-weight:300;letter-spacing:2px;color:rgba(255,255,255,0.3);text-transform:uppercase}
 
-.masthead{
-  background:#fff;border-bottom:1px solid var(--rule);
-  padding:1.6rem 2.5rem 1.4rem;
-  display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;
-}
+.masthead{background:#fff;border-bottom:1px solid var(--rule);padding:1.6rem 2.5rem 1.4rem;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem}
 .masthead-logo{font-family:'Playfair Display',serif;font-size:52px;font-weight:700;color:var(--ink);letter-spacing:-1px;line-height:1}
 .masthead-logo span{color:var(--navy)}
 .masthead-center{flex:1;text-align:center;padding-bottom:4px}
@@ -181,7 +156,7 @@ footer{background:var(--navy);padding:2rem 2.5rem;display:flex;align-items:cente
 
 <div class="hero">
   <div class="hero-lead" onclick="openModal(0)">
-    <img class="hero-lead-img" id="hero-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1400&q=85&auto=format" alt="" referrerpolicy="no-referrer">
+    <img class="hero-lead-img" id="hero-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1400&q=85&auto=format" alt="">
     <div class="hero-lead-overlay"></div>
     <div class="hero-lead-body">
       <div class="hero-eyebrow">
@@ -205,7 +180,7 @@ footer{background:var(--navy);padding:2rem 2.5rem;display:flex;align-items:cente
 <div class="grid" id="main-grid"></div>
 
 <div class="wide-feature" id="wide-feature" onclick="openModal(4)">
-  <img class="wide-feature-img" id="wf-img" src="" alt="" referrerpolicy="no-referrer">
+  <img class="wide-feature-img" id="wf-img" src="" alt="">
   <div class="wide-feature-body">
     <div class="wide-cat" id="wf-cat">Autos</div>
     <div class="wide-title" id="wf-title"></div>
@@ -235,7 +210,7 @@ footer{background:var(--navy);padding:2rem 2.5rem;display:flex;align-items:cente
 <div class="modal-bg" id="modal-bg" onclick="closeMbg(event)">
   <div class="modal">
     <button class="modal-x" onclick="closeModal()">✕</button>
-    <img class="modal-hero-img" id="m-img" src="" alt="" referrerpolicy="no-referrer">
+    <img class="modal-hero-img" id="m-img" src="" alt="">
     <div class="modal-body">
       <div class="modal-cat" id="m-cat"></div>
       <div class="modal-title" id="m-title"></div>
@@ -251,22 +226,16 @@ const FALLBACK_IMG='https://images.unsplash.com/photo-1441986300917-64674bd600d8
 const S=[
   {cat:'moda',title:'El Traje de Tres Piezas Regresa: El Renacimiento del Formalismo en el Hombre Contemporáneo',deck:'Las grandes casas de Savile Row reportan un aumento del 34% en encargos de trajes a medida. La nueva generación descubre que la elegancia no caduca — simplemente esperaba el momento correcto.',img:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1400&q=85&auto=format',url:'https://www.gq.com'},
   {cat:'relojes',title:'Patek Philippe Ref. 5726A: La Pieza Anual 2025 Que Redefine el Coleccionismo',deck:'Con 1,300 ejemplares producidos, la más reciente Annual Calendar en acero genera listas de espera de tres años en boutiques de todo el mundo.',img:'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=900&q=85&auto=format',url:'https://www.hodinkee.com'},
-  {cat:'whisky',title:'Macallan Lalique 72 Años: £285,000 en Subasta de Christie\'s',deck:'El Highland Single Malt más antiguo jamás embotellado bajo la colaboración Lalique rompe todos los precedentes. El arte del tiempo, literalmente.',img:'https://images.unsplash.com/photo-1527281400683-1aefee6f8d84?w=900&q=85&auto=format',url:'https://www.whiskyadvocate.com'},
-  {cat:'formula1',title:'La Vuelta Perfecta de Verstappen en Mónaco: Análisis Técnico del RB20',deck:'Los ingenieros de Red Bull calificaron la pole position como \'matemáticamente improbable\'. Los datos de telemetría revelan una historia extraordinaria.',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=85&auto=format',url:'https://www.formula1.com'},
+  {cat:'whisky',title:"Macallan Lalique 72 Años: £285,000 en Subasta de Christie's",deck:'El Highland Single Malt más antiguo jamás embotellado bajo la colaboración Lalique rompe todos los precedentes. El arte del tiempo, literalmente.',img:'https://images.unsplash.com/photo-1527281400683-1aefee6f8d84?w=900&q=85&auto=format',url:'https://www.whiskyadvocate.com'},
+  {cat:'formula1',title:"La Vuelta Perfecta de Verstappen en Mónaco: Análisis Técnico del RB20",deck:"Los ingenieros de Red Bull calificaron la pole position como 'matemáticamente improbable'. Los datos de telemetría revelan una historia extraordinaria.",img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=85&auto=format',url:'https://www.formula1.com'},
   {cat:'autos',title:'Aston Martin DB12: El Grand Tourer Más Refinado de la Década en Carretera',deck:'671 hp. V8 biturbo. 0–100 en 3.5 segundos. Y sin embargo, lo que define al DB12 no es la velocidad — es la manera en que devora kilómetros con una serenidad casi ofensiva.',img:'https://images.unsplash.com/photo-1617531653332-bd46c16f981f?w=900&q=85&auto=format',url:'https://www.topgear.com'},
   {cat:'clase',title:'El Arte de Recibir: Los Principios del Gran Anfitrión',deck:'Del palazzo florentino al penthouse neoyorquino, los maestros de la hospitalidad comparten los principios que transforman una cena ordinaria en una noche que se recuerda por décadas.',img:'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85&auto=format',url:'https://www.architecturaldigest.com'},
 ];
 const CL={moda:'Moda',relojes:'Relojes',whisky:'Whisky & Spirits',formula1:'Formula 1',autos:'Autos',clase:'Clase & Estilo'};
 
-/* Proxies imagen para evitar hotlink/CORS del sitio original */
-function proxyImg(url){
-  if(!url)return FALLBACK_IMG;
-  if(url.startsWith('data:'))return url;
-  return'https://images.weserv.nl/?url='+encodeURIComponent(url)+'&w=900&q=85&output=jpg';
-}
-
-function imgTag(src,cls){
-  return`<img class="${cls}" src="${proxyImg(src)}" alt="" referrerpolicy="no-referrer" onerror="this.src='${FALLBACK_IMG}'">`;
+function safeImg(el,src){
+  el.src=src;
+  el.onerror=()=>{el.src=FALLBACK_IMG;el.onerror=null;};
 }
 
 function renderStack(){
@@ -276,8 +245,15 @@ function renderStack(){
     const d=document.createElement('div');
     d.className='stack-item';
     d.onclick=()=>openModal(i+1);
-    d.innerHTML=imgTag(s.img,'stack-item-img')+
-      `<div class="stack-item-content"><div class="stack-cat">${CL[s.cat]||s.cat}</div><div class="stack-title">${s.title}</div><div class="stack-meta">Redacción Wayerman</div></div>`;
+    const img=document.createElement('img');
+    img.className='stack-item-img';
+    img.alt='';
+    safeImg(img,s.img);
+    d.appendChild(img);
+    const content=document.createElement('div');
+    content.className='stack-item-content';
+    content.innerHTML=`<div class="stack-cat">${CL[s.cat]||s.cat}</div><div class="stack-title">${s.title}</div><div class="stack-meta">Redacción Wayerman</div>`;
+    d.appendChild(content);
     el.appendChild(d);
   });
 }
@@ -289,12 +265,22 @@ function renderGrid(){
     const d=document.createElement('div');
     d.className='article';
     d.onclick=()=>openModal(i+1);
-    d.innerHTML=`<div class="article-img-wrap">${imgTag(s.img,'article-img')}</div>`+
-      `<div class="article-body"><div class="article-cat">${CL[s.cat]||s.cat}</div><div class="article-title">${s.title}</div><div class="article-deck">${s.deck}</div></div>`;
+    const wrap=document.createElement('div');
+    wrap.className='article-img-wrap';
+    const img=document.createElement('img');
+    img.className='article-img';
+    img.alt='';
+    safeImg(img,s.img);
+    wrap.appendChild(img);
+    d.appendChild(wrap);
+    const body=document.createElement('div');
+    body.className='article-body';
+    body.innerHTML=`<div class="article-cat">${CL[s.cat]||s.cat}</div><div class="article-title">${s.title}</div><div class="article-deck">${s.deck}</div>`;
+    d.appendChild(body);
     el.appendChild(d);
   });
   const wf=S[4];
-  document.getElementById('wf-img').src=proxyImg(wf.img);
+  safeImg(document.getElementById('wf-img'),wf.img);
   document.getElementById('wf-cat').textContent=CL[wf.cat]||wf.cat;
   document.getElementById('wf-title').textContent=wf.title;
   document.getElementById('wf-deck').textContent=wf.deck;
@@ -302,7 +288,7 @@ function renderGrid(){
 
 function openModal(i){
   const s=S[i];if(!s)return;
-  document.getElementById('m-img').src=proxyImg(s.img);
+  safeImg(document.getElementById('m-img'),s.img);
   document.getElementById('m-cat').textContent=CL[s.cat]||s.cat;
   document.getElementById('m-title').textContent=s.title;
   document.getElementById('m-deck').textContent=s.deck;
@@ -312,8 +298,25 @@ function openModal(i){
 function closeModal(){document.getElementById('modal-bg').classList.remove('open')}
 function closeMbg(e){if(e.target===document.getElementById('modal-bg'))closeModal()}
 
-/* Obtiene metadatos OG del artículo via proxies CORS */
+/* ── Obtiene metadata real del artículo ── */
 async function fetchOGData(url){
+  /* 1. microlink.io — API dedicada, devuelve JSON con imagen lista */
+  try{
+    const r=await fetch('https://api.microlink.io/?url='+encodeURIComponent(url),
+      {signal:AbortSignal.timeout(9000)});
+    if(r.ok){
+      const j=await r.json();
+      if(j.status==='success'&&j.data){
+        return{
+          title:j.data.title||'',
+          deck:j.data.description||'',
+          img:j.data.image?.url||j.data.screenshot?.url||'',
+        };
+      }
+    }
+  }catch(e){}
+
+  /* 2. Fallback: parseo manual via proxy CORS */
   const proxies=[
     'https://corsproxy.io/?'+encodeURIComponent(url),
     'https://api.allorigins.win/raw?url='+encodeURIComponent(url),
@@ -322,24 +325,18 @@ async function fetchOGData(url){
     try{
       const r=await fetch(proxy,{signal:AbortSignal.timeout(8000)});
       if(!r.ok)continue;
-      const text=await r.text();
-      const doc=new DOMParser().parseFromString(text,'text/html');
+      const doc=new DOMParser().parseFromString(await r.text(),'text/html');
       const og=p=>doc.querySelector(`meta[property="${p}"]`)?.getAttribute('content')||
                    doc.querySelector(`meta[name="${p}"]`)?.getAttribute('content')||'';
-      /* Extrae imagen: og:image → twitter:image → primer <img> relevante */
       let img=og('og:image')||og('twitter:image')||'';
       if(!img){
-        const els=[...doc.querySelectorAll('article img,main img,.post img,img')];
-        for(const el of els){
+        for(const el of doc.querySelectorAll('article img,main img,img')){
           const src=el.getAttribute('src')||'';
-          if(!src||/logo|icon|avatar|sprite|pixel/i.test(src))continue;
+          if(!src||/logo|icon|avatar|sprite|pixel|tracking/i.test(src))continue;
           try{img=new URL(src,url).href;break;}catch(e){}
         }
       }
-      /* Resuelve URLs relativas usando el origen del artículo */
-      if(img&&!img.startsWith('http')){
-        try{img=new URL(img,url).href;}catch(e){}
-      }
+      if(img&&!img.startsWith('http'))try{img=new URL(img,url).href;}catch(e){}
       return{
         title:og('og:title')||og('twitter:title')||doc.title||'',
         deck:og('og:description')||og('description')||og('twitter:description')||'',
@@ -355,9 +352,7 @@ async function addUrl(){
   const btn=document.getElementById('add-btn');
   const url=inp.value.trim();
   if(!url)return;
-
-  btn.textContent='Cargando…';
-  btn.disabled=true;
+  btn.textContent='Cargando…';btn.disabled=true;
 
   const meta=await fetchOGData(url);
 
@@ -365,21 +360,16 @@ async function addUrl(){
     cat:'clase',
     title:meta?.title||'Artículo Agregado',
     deck:meta?.deck||'Contenido desde: '+url,
-    img:meta?.img||'',
+    img:meta?.img||FALLBACK_IMG,
     url,
   });
 
-  const heroImg=document.getElementById('hero-img');
-  heroImg.src=proxyImg(S[0].img);
-  heroImg.onerror=()=>{heroImg.src=FALLBACK_IMG};
+  safeImg(document.getElementById('hero-img'),S[0].img);
   document.getElementById('hero-cat').textContent=CL[S[0].cat]||S[0].cat;
   document.getElementById('hero-title').textContent=S[0].title;
   document.getElementById('hero-deck').textContent=S[0].deck;
-  renderStack();
-  renderGrid();
-  inp.value='';
-  btn.textContent='Agregar →';
-  btn.disabled=false;
+  renderStack();renderGrid();
+  inp.value='';btn.textContent='Agregar →';btn.disabled=false;
 }
 
 document.querySelectorAll('.topbar-cat').forEach(b=>{
@@ -395,8 +385,7 @@ const ds=`${hoy.getDate()} de ${meses[hoy.getMonth()]} de ${hoy.getFullYear()}`;
 document.getElementById('topbar-date').textContent=ds;
 document.getElementById('mast-date').textContent=ds;
 
-renderStack();
-renderGrid();
+renderStack();renderGrid();
 </script>
 </body>
 </html>
